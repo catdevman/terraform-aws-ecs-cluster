@@ -1,14 +1,13 @@
-module "eg_prod_bastion_label" {
-  source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=master"
-  namespace  = "${var.namespace}"
-  stage      = "prod"
-  name       = "bastion"
-  attributes = ["public"]
-  delimiter  = "-"
+module "alb_label" {
+  source      = "git::https://github.com/cloudposse/terraform-null-label.git?ref=master"
+  namespace   = "${var.namespace}"
+  environment = "${var.environment}"
+  stage       = "${var.stage}"
+  delimiter   = "-"
 }
 
 resource "aws_alb" "alb" {
-  name            = "${var.alb_name}"
+  name            = "${module.alb_label.id}-alb"
   subnets         = ["${var.public_subnet_ids}"]
   security_groups = ["${aws_security_group.alb.id}"]
 
@@ -18,7 +17,7 @@ resource "aws_alb" "alb" {
 }
 
 resource "aws_security_group" "alb" {
-  name   = "${var.namespace}-${var.short_region}-${var.application}-${var.stage}-alb"
+  name   = "${module.alb_label.id}-sg"
   vpc_id = "${var.vpc_id}"
 
   tags {

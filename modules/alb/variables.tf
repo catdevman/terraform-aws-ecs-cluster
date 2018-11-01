@@ -1,15 +1,27 @@
 variable "alb_name" {
   default     = "default"
-  description = "The name of the loadbalancer"
+  description = "The name of the loadbalancer."
+}
+
+variable "namespace" {
+  description = "The namespace of the environment."
 }
 
 variable "environment" {
-  description = "The name of the environment"
+  description = "The name of the environment."
 }
 
-variable "namespace" {}
-variable "short_region" {}
-variable "application" {}
+variable "short_region" {
+ description = "The short region name."
+}
+
+variable "region" {
+ description = "The region id (ex: us-east-1, us-west-2)."
+}
+
+variable "application" {
+description = "The name of the application."
+}
 variable "stage" {}
 
 variable "public_subnet_ids" {
@@ -19,11 +31,6 @@ variable "public_subnet_ids" {
 
 variable "vpc_id" {
   description = "The VPC id"
-}
-
-variable "deregistration_delay" {
-  default     = "300"
-  description = "The default deregistration delay"
 }
 
 variable "health_check_path" {
