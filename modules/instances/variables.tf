@@ -1,3 +1,8 @@
+variable "region" {
+  description = "Region to create resources in."
+  type = "string"
+}
+
 variable "environment" {
   description = "The name of the environment"
 }
@@ -78,9 +83,19 @@ variable "ecs_config" {
   description = "Specify ecs configuration or get it from S3. Example: aws s3 cp s3://some-bucket/ecs.config /etc/ecs/ecs.config"
 }
 
+variable "timezone" {
+    default     = "Universal"
+    description = "Timezone file path from the /usr/share/zoneinfo path."
+}
+
 variable "ecs_logging" {
   default     = "[\"json-file\",\"awslogs\"]"
   description = "Adding logging option to ECS that the Docker containers can use. It is possible to add fluentd as well"
+}
+
+variable "log_retention_in_days" {
+    default     = 30
+    description = ""
 }
 
 variable "ebs_volume_size" {

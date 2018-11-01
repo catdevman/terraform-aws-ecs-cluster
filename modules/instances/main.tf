@@ -200,6 +200,7 @@ data "template_file" "user_data" {
   template = "${file("${path.module}/templates/user_data.sh")}"
 
   vars {
+    timezone          = "${var.timezone}"
     ecs_config        = "${var.ecs_config}"
     ecs_logging       = "${var.ecs_logging}"
     cluster_name      = "${var.cluster}"
