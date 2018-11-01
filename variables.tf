@@ -4,8 +4,14 @@ variable "environment" {
 
 variable "namespace" {}
 variable "short_region" {}
+variable "region" {}
 variable "application" {}
 variable "stage" {}
+
+variable "tags" {
+    type = "map"
+    default = {}
+}
 
 variable "cluster" {
   default     = "default"
