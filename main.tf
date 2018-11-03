@@ -14,7 +14,6 @@ module "vpc_label" {
 module "vpc" {
   source = "modules/vpc"
 
-  region             = "${var.region}"
   cidr               = "${var.cidr}"
   availability_zones = ["${var.availability_zones}"]
   private_subnets    = ["${var.private_subnet_cidrs}"]

@@ -1,8 +1,3 @@
-variable "region" {
-  description = "Region to create this vpc in."
-  type        = "string"
-}
-
 variable "cidr" {
   description = "CDIR block range for this vpc. (ex: 10.0.0.0/16)"
   type        = "string"
