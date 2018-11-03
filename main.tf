@@ -1,8 +1,34 @@
+locals {
+    environment = "${var.environment != "" ? var.environment : terraform.workspace}"
+}
+
+module "vpc_label" {
+  source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=master"
+  namespace  = "${var.namespace}"
+  stage      = "${local.environment}"
+  name       = "vpc"
+  delimiter  = "-"
+  tags = "${var.tags}"
+}
+
+module "vpc" {
+  source = "modules/vpc"
+
+  region             = "${var.region}"
+  cidr               = "${var.cidr}"
+  availability_zones = ["${var.availability_zones}"]
+  private_subnets    = ["${var.private_subnet_cidrs}"]
+  public_subnets     = ["${var.public_subnet_cidrs}"]
+  namespace          = "${module.vpc_label.namespace}"
+  application        = "${module.vpc_label.name}"
+  stage              = "${module.vpc_label.stage}"
+}
+
 module "alb_label" {
   source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=master"
   namespace  = "${var.namespace}"
-  stage      = "${var.environment}"
-  name       = ""
+  stage      = "${local.environment}"
+  name       = "alb"
   delimiter  = "-"
   tags = "${var.tags}"
 }
@@ -10,16 +36,15 @@ module "alb_label" {
 module "alb" {
   source = "modules/alb"
 
-  environment  = "${var.environment}"
-  namespace    = "${var.namespace}"
-  region       = "${var.region}"
+  environment  = "${local.environment}"
+  namespace    = "${module.alb_label.namespace}"
   short_region = "${var.short_region}"
   application  = "${var.application}"
-  stage        = "${var.stage}"
+  stage        = "${module.alb_label.stage}"
 
-  alb_name          = "${var.cluster}"
-  vpc_id            = "${var.vpc_id}"
-  public_subnet_ids = "${var.public_subnet_ids}"
+  alb_name          = "${module.ecs_cluster_label.id}"
+  vpc_id            = "${module.vpc.vpc_id}"
+  public_subnet_ids = "${module.vpc.public_subnet_ids}"
 }
 
 resource "aws_security_group_rule" "alb_to_ecs" {
@@ -37,7 +62,7 @@ resource "aws_security_group_rule" "alb_to_ecs" {
 
 module "ecs_instance_role_label" {
   source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=master"
-  namespace  = "${var.environment}"
+  namespace  = "${local.environment}"
   stage      = "ecs"
   name       = "instancerole"
   delimiter  = "_"
@@ -65,7 +90,7 @@ EOF
 
 module "ecs_iam_instance_profile_label" {
   source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=master"
-  namespace  = "${var.environment}"
+  namespace  = "${local.environment}"
   stage      = "ecs"
   name       = "instanceprofile"
   delimiter  = "_"
@@ -90,9 +115,9 @@ resource "aws_iam_role_policy_attachment" "ecs_ec2_cloudwatch_role" {
 
 module "ecs_lb_iam_role_label" {
   source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=master"
-  namespace  = "${var.environment}"
+  namespace  = "${local.environment}"
   stage      = "ecs"
-  name       = "instanceprofile"
+  name       = "lbiamrole"
   delimiter  = "_"
   tags = "${var.tags}"
 }
@@ -122,38 +147,40 @@ resource "aws_iam_role_policy_attachment" "ecs_lb" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceRole"
 }
 
+resource "null_resource" "vpc_dependency" {
+  depends_on = ["module.vpc"]
+}
+
 module "ecs_instances" {
   # module.network = terraform-aws-modules/vpc/aws
   source = "modules/instances"
 
   region                  = "${var.region}"
-  environment             = "${var.environment}"
-  cluster                 = "${var.cluster}"
+  environment             = "${local.environment}"
+  cluster                 = "${module.ecs_cluster_label.id}"
   instance_group          = "${var.instance_group}"
-  private_subnet_ids      = "${var.private_subnet_ids}"
+  private_subnet_ids      = "${module.vpc.private_subnet_ids}"
   aws_ami                 = "${var.ecs_aws_ami}"
   instance_type           = "${var.instance_type}"
   max_size                = "${var.max_size}"
   min_size                = "${var.min_size}"
   desired_capacity        = "${var.desired_capacity}"
-  vpc_id                  = "${var.vpc_id}"
+  vpc_id                  = "${module.vpc.vpc_id}"
   iam_instance_profile_id = "${aws_iam_instance_profile.ecs.id}"
   key_name                = "${var.key_name}"
-  load_balancers          = "${var.load_balancers}"
-  depends_id              = "${var.depends_id}"
+  depends_id              = "${null_resource.vpc_dependency.id}"
   custom_userdata         = "${var.custom_userdata}"
   cloudwatch_prefix       = "${var.cloudwatch_prefix}"
-  depends_id              = "${var.depends_id}"
   ebs_volume_size         = "${var.ebs_volume_size}"
 }
 
 module "ecs_cluster_label" {
-  source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=master"
-  namespace  = "${var.namespace}"
-  stage      = "${var.environment}"
-  name       = "cluster"
-  delimiter  = "-"
-  tags = "${var.tags}"
+  source    = "git::https://github.com/cloudposse/terraform-null-label.git?ref=master"
+  namespace = "${var.namespace}"
+  stage     = "${local.environment}"
+  name      = "cluster"
+  delimiter = "-"
+  tags      = "${var.tags}"
 }
 
 resource "aws_ecs_cluster" "cluster" {

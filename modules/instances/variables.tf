@@ -1,6 +1,6 @@
 variable "region" {
   description = "Region to create resources in."
-  type = "string"
+  type        = "string"
 }
 
 variable "environment" {
@@ -84,8 +84,8 @@ variable "ecs_config" {
 }
 
 variable "timezone" {
-    default     = "Universal"
-    description = "Timezone file path from the /usr/share/zoneinfo path."
+  default     = "Universal"
+  description = "Timezone file path from the /usr/share/zoneinfo path."
 }
 
 variable "ecs_logging" {
@@ -94,8 +94,8 @@ variable "ecs_logging" {
 }
 
 variable "log_retention_in_days" {
-    default     = 30
-    description = ""
+  default     = 30
+  description = ""
 }
 
 variable "ebs_volume_size" {
@@ -114,50 +114,49 @@ variable "scale_down_cooldown_seconds" {
 }
 
 variable "high_cpu_evaluation_periods" {
-  default     = "2"
+  default = "2"
 }
 
 variable "low_cpu_evaluation_periods" {
-  default     = "2"
+  default = "2"
 }
 
 variable "high_cpu_period_seconds" {
-  default     = "60"
+  default = "60"
 }
 
 variable "low_cpu_period_seconds" {
-  default     = "60"
+  default = "60"
 }
 
 variable "high_cpu_threshold_percent" {
-  default     = "90"
+  default = "90"
 }
 
 variable "low_cpu_threshold_percent" {
-  default     = "70"
+  default = "70"
 }
 
-
 variable "high_memory_evaluation_periods" {
-  default     = "2"
+  default = "2"
 }
 
 variable "low_memory_evaluation_periods" {
-  default     = "2"
+  default = "2"
 }
 
 variable "high_memory_period_seconds" {
-  default     = "60"
+  default = "60"
 }
 
 variable "low_memory_period_seconds" {
-  default     = "60"
+  default = "60"
 }
 
 variable "high_memory_threshold_percent" {
-  default     = "90"
+  default = "90"
 }
 
 variable "low_memory_threshold_percent" {
-  default     = "70"
+  default = "70"
 }

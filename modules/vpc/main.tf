@@ -1,10 +1,10 @@
 module "network_label" {
-  source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=master"
-  namespace  = "${var.namespace}"
-  stage      = "${var.stage}"
-  name       = "vpc"
-  delimiter  = "-"
-  tags = "${var.tags}"
+  source    = "git::https://github.com/cloudposse/terraform-null-label.git?ref=master"
+  namespace = "${var.namespace}"
+  stage     = "${var.stage}"
+  name      = "vpc"
+  delimiter = "-"
+  tags      = "${var.tags}"
 }
 
 module "network" {

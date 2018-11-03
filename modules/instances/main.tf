@@ -94,7 +94,7 @@ resource "aws_autoscaling_group" "asg" {
   }
 
   lifecycle {
-   ignore_changes = ["desired_count"]
+    ignore_changes = ["desired_count"]
   }
 }
 
@@ -194,7 +194,6 @@ resource "aws_cloudwatch_metric_alarm" "container_instance_low_memory" {
 
   depends_on = ["aws_cloudwatch_metric_alarm.container_instance_high_memory"]
 }
-
 
 data "template_file" "user_data" {
   template = "${file("${path.module}/templates/user_data.sh")}"

@@ -12,16 +12,13 @@ variable "environment" {
 }
 
 variable "short_region" {
- description = "The short region name."
-}
-
-variable "region" {
- description = "The region id (ex: us-east-1, us-west-2)."
+  description = "The short region name."
 }
 
 variable "application" {
-description = "The name of the application."
+  description = "The name of the application."
 }
+
 variable "stage" {}
 
 variable "public_subnet_ids" {

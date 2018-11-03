@@ -1,21 +1,17 @@
+# terraform.workspace is used by default only override if absolutely necessary
 variable "environment" {
   description = "The name of the environment"
+  default = ""
 }
 
 variable "namespace" {}
 variable "short_region" {}
 variable "region" {}
 variable "application" {}
-variable "stage" {}
 
 variable "tags" {
-    type = "map"
-    default = {}
-}
-
-variable "cluster" {
-  default     = "default"
-  description = "The name of the ECS cluster"
+  type    = "map"
+  default = {}
 }
 
 variable "instance_group" {
@@ -23,13 +19,10 @@ variable "instance_group" {
   description = "The name of the instances that you consider as a group"
 }
 
-variable "vpc_cidr" {
+variable "cidr" {
   description = "VPC cidr block. Example: 10.0.0.0/16"
 }
 
-variable "vpc_id" {
-  description = "VPC ID."
-}
 
 variable "private_subnet_cidrs" {
   type        = "list"
@@ -39,16 +32,6 @@ variable "private_subnet_cidrs" {
 variable "public_subnet_cidrs" {
   type        = "list"
   description = "List of public cidrs, for every avalibility zone you want you need one. Example: 10.0.0.0/24 and 10.0.1.0/24"
-}
-
-variable "private_subnet_ids" {
-  type        = "list"
-  description = "List of private subnet ids, for every avalibility zone you want you need one."
-}
-
-variable "public_subnet_ids" {
-  type        = "list"
-  description = "List of public subnet ids, for every avalibility zone you want you need one."
 }
 
 variable "load_balancers" {
@@ -105,8 +88,6 @@ variable "cloudwatch_prefix" {
   default     = ""
   description = "If you want to avoid cloudwatch collision or you don't want to merge all logs to one log group specify a prefix"
 }
-
-variable "depends_id" {}
 
 variable "ebs_volume_size" {
   default     = "22"
