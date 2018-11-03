@@ -1,7 +1,3 @@
-variable "region" {
-  description = "Region to create resources in."
-  type        = "string"
-}
 
 variable "environment" {
   description = "The name of the environment"

@@ -93,3 +93,8 @@ variable "ebs_volume_size" {
   default     = "22"
   description = "Default size is 22GB. This volume is mapped to /dev/xvdcz for Docker."
 }
+
+variable "instance_timezone" {
+  default     = "Universal"
+  description = "Timezone file path from the /usr/share/zoneinfo path."
+}

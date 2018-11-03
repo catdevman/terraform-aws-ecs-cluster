@@ -155,7 +155,6 @@ module "ecs_instances" {
   # module.network = terraform-aws-modules/vpc/aws
   source = "modules/instances"
 
-  region                  = "${var.region}"
   environment             = "${local.environment}"
   cluster                 = "${module.ecs_cluster_label.id}"
   instance_group          = "${var.instance_group}"
@@ -172,6 +171,7 @@ module "ecs_instances" {
   custom_userdata         = "${var.custom_userdata}"
   cloudwatch_prefix       = "${var.cloudwatch_prefix}"
   ebs_volume_size         = "${var.ebs_volume_size}"
+  timezone                = "${var.instance_timezone}"
 }
 
 module "ecs_cluster_label" {
